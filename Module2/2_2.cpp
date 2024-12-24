@@ -40,10 +40,7 @@ private:
         Node& operator=(const Node&) = delete;
         Node& operator=(Node&&) = delete;
 
-        ~Node() {
-            delete left;
-            delete right;
-        }
+        ~Node() = default;
     };
 
     Node* root;
@@ -58,7 +55,20 @@ public:
     explicit BinaryTree(Comparator cmp = Comparator()) : root(nullptr), comp(cmp) {}
 
     ~BinaryTree() {
-        delete root;
+        if (!root) return;
+
+        stack<Node*> stack;
+        stack.push(root);
+
+        while (!stack.empty()) {
+            Node* current = stack.top();
+            stack.pop();
+
+            if (current->left) stack.push(current->left);
+            if (current->right) stack.push(current->right);
+
+            delete current;
+        }
     }
 
     void Insert(const T& key) {
