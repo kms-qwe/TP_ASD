@@ -20,7 +20,6 @@
 #include <vector>
 #include <queue>
 #include <limits>
-#include <cassert>
 
 using namespace std;
 
@@ -28,21 +27,22 @@ const int INF = numeric_limits<int>::max();
 
 typedef pair<int, int> Edge; 
 
-double findShortestPath(int n, int m, vector<vector<Edge>>& graph, int s, int t) {
-    vector<int> distance(n, INF);
-    priority_queue<Edge, vector<Edge>, greater<Edge>> pq;
+int findShortestPath(int n, int m, vector<vector<Edge>>& graph, int s, int t) {
+    vector<int> distance(n, INF); 
+    vector<bool> visited(n, false);
+    priority_queue<Edge, vector<Edge>, greater<Edge>> pq; 
 
     distance[s] = 0;
-    pq.push({0, s});
-
+    pq.push({0, s}); 
     while (!pq.empty()) {
-        int current_dist = pq.top().first;
         int current_city = pq.top().second;
+        int current_dist = pq.top().first;
         pq.pop();
 
-        if (current_dist > distance[current_city]) {
-            continue;
+        if (visited[current_city]) {
+            continue; 
         }
+        visited[current_city] = true; 
 
         for (auto& edge : graph[current_city]) {
             int weight = edge.first;
@@ -50,7 +50,7 @@ double findShortestPath(int n, int m, vector<vector<Edge>>& graph, int s, int t)
 
             if (distance[current_city] + weight < distance[neighbor]) {
                 distance[neighbor] = distance[current_city] + weight;
-                pq.push({distance[neighbor], neighbor});
+                pq.push({distance[neighbor], neighbor}); 
             }
         }
     }
@@ -61,28 +61,26 @@ double findShortestPath(int n, int m, vector<vector<Edge>>& graph, int s, int t)
 int main() {
     int n, m;
     cin >> n >> m;
-    // assert(3 <= n && n <= 10000 && 1 <= m && m <= 250000);
 
     vector<vector<Edge>> graph(n);
     for (int i = 0; i < m; ++i) {
         int u, v, w;
         cin >> u >> v >> w;
-        // assert(0 <= u && u < n && 0 <= v && v < n && 1 <= w && w <= 100000);
         graph[u].push_back({w, v});
-        graph[v].push_back({w, u});
+        graph[v].push_back({w, u}); 
     }
 
     int s, t;
     cin >> s >> t;
 
     int result = findShortestPath(n, m, graph, s, t);
-    // assert(result != INF);
-    if (result == INF) {
-        cout << -1 << endl;
-    } else {
-        cout << result << endl;
 
-    }   
+    if (result == INF) {
+        cout << -1 << endl; 
+    } else {
+        cout << result << endl; 
+    }
 
     return 0;
 }
+
